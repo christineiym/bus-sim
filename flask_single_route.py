@@ -1,5 +1,10 @@
-import random
+from flask import Flask, render_template
 import plotly.graph_objects as go
+import plotly.io as pio
+import random
+import json
+
+app = Flask(__name__, template_folder='./')
 
 class Passenger:
     def __init__(self, on_stop):
@@ -13,7 +18,8 @@ class Passenger:
         trip_info_string = f"{self.on_stop} - {self.off_stop}"
         return trip_info_string
 
-def main():
+@app.route('/')
+def index():
     # ons = [3, 2, 4, 0]
     # offs = [0, 2, 2, 5]  # is this a valid set of ons/offs?
     # stops = ["s1", "s2", "s3", "s4"]
@@ -30,7 +36,7 @@ def main():
     bus = []
     completed_trips = []
 
-    times_to_simulate = 100
+    times_to_simulate = 10
     trip_summaries = {}
 
     for x in range(times_to_simulate):
@@ -72,7 +78,7 @@ def main():
     keys_with_highest_value = [key for key, value in trip_summaries.items() if value == max_value]
     random_key = random.choice(keys_with_highest_value)
     pairs = random_key.split(", ")
-    print(pairs)
+    # print(pairs)
     origin_dest = [pair.split(": ")[0] for pair in pairs]
     origin = [origin_dest_pair.split(" - ")[0] for origin_dest_pair in origin_dest]
     dest = [origin_dest_pair.split(" - ")[1] for origin_dest_pair in origin_dest]
@@ -95,7 +101,9 @@ def main():
     ))])
 
     fig.update_layout(title_text="Passenger Flow Between Stops", font_size=10)
-    fig.show()
+
+    graph_json = pio.to_json(fig, pretty=True)
+    return render_template('./index.html', graphJSON=graph_json)
 
 
 def bus_trips_summary(passengers: list[Passenger]):
@@ -113,4 +121,4 @@ def bus_trips_summary(passengers: list[Passenger]):
 
 
 if __name__ == "__main__":
-    main()
+    app.run(debug=True)
