@@ -8,6 +8,7 @@
 	<link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 
+<!-- <body onload="submitform()"> -->
 <body>
 	<div class="box">
 		<div class="row header">
@@ -17,7 +18,45 @@
 		<div id='chart' class='row content'></div>
 
 		<div class="row footer">
-			<p>January 2025</p>
+			<form method="post">
+				<div style="float:left;">
+					<label for="route_name">Route name:</label><br>
+					<select id="route_name" name="route_name"><br><br>
+						{% for route in menu_route_list %}
+						<option value="{{ route }}">{{ route }}</option>
+						{% endfor %}
+					</select>
+				</div>
+
+				<div style="float:left;">
+					<label for="service_day">Service Day:</label><br>
+					<select id="service_day" name="service_day"><br><br>
+						{% for service_day in menu_service_day_list %}
+						<option value="{{ service_day }}">{{ service_day }}</option>
+						{% endfor %}
+					</select>
+				</div>
+
+				<div style="float:left;">
+					<label for="date">Date:</label><br>
+					<select id="date" name="date"><br><br>
+						{% for date in menu_date_list %}
+						<option value="{{ date }}">{{ date }}</option>
+						{% endfor %}
+					</select>
+				</div>
+
+				<div style="float:left;">
+					<label for="direction">Direction:</label><br>
+					<select id="direction" name="direction"><br><br>
+						{% for direction in menu_direction_list %}
+						<option value="{{ direction }}">{{ direction }}</option>
+						{% endfor %}
+					</select>
+				</div>
+				<br>
+				<input type="submit" value="Submit">
+			</form>
 		</div>
 	</div>
 </body>
@@ -28,5 +67,23 @@
 	var graphs = {{ graphJSON | safe}};
 	Plotly.plot('chart', graphs, {});
 </script>
+<script>
+	const route_name_dropdown = document.getElementById("route_name");
+	route_name_dropdown.value = "{{ selected_route_name }}";
+
+	const service_day_dropdown = document.getElementById("service_day");
+	service_day_dropdown.value = "{{ selected_service_day }}";
+
+	const date_dropdown = document.getElementById("date");
+	date_dropdown.value = "{{ selected_date }}";
+
+	const direction_dropdown = document.getElementById("direction");
+	direction_dropdown.value = "{{ selected_direction }}";
+</script>
+<!-- <script type="text/javascript" language="javascript">
+	function submitform(){
+	document.myForm.submit();
+	}	
+</script> -->
 
 </html>
