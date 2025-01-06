@@ -8,13 +8,7 @@ import sqlite3
 app = Flask(__name__, template_folder='./')
 
 DATABASE = './bus_data.db'
-# ROUTE_SCHEDULE = """
-#     SELECT stop_name, direction, total_ons, total_offs
-#                FROM Stop_Usage S
-#                 WHERE serviceday = "Weekday"
-#                 AND datekey = 202001
-#             ORDER BY direction;
-# """
+
 DEMO_ROUTE_SCHEDULE = """
     SELECT stop_name, direction, total_ons, total_offs
                FROM Stop_Usage S
@@ -100,7 +94,7 @@ def index():
     stops = [item[0] for item in result]
     ons = [item[2] for item in result]
     offs = [item[3] for item in result]
-    print(stops)
+    # print(stops)
 
     if request.method == 'POST':
         route_name = request.form['route_name']
@@ -124,7 +118,7 @@ def index():
             stops = [item[0] for item in result]
             ons = [item[2] for item in result]
             offs = [item[3] for item in result]
-            print(stops)
+            # print(stops)
 
     bus = []
     completed_trips = []
