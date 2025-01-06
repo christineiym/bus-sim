@@ -126,7 +126,7 @@ def index():
     bus = []
     completed_trips = []
 
-    times_to_simulate = 25  # allow user to control
+    times_to_simulate = 10  # allow user to control
     trip_summaries = {}
 
     for x in range(times_to_simulate):
