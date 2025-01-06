@@ -4,6 +4,9 @@ import plotly.io as pio
 import random
 import json
 import sqlite3
+import os
+
+# port = process.env.PORT | 5000
 
 app = Flask(__name__, template_folder='./')
 
@@ -219,6 +222,6 @@ def close_connection(exception):
     if db is not None:
         db.close()
 
-# if __name__ == "__main__":
-#     port = int(os.environ.get("PORT", 10000))
-#     app.run(host='0.0.0.0', port=port)
+if __name__ == "__main__":
+    port = int(os.environ.get("PORT"))
+    app.run(host='0.0.0.0', port=port)
