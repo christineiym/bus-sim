@@ -8,6 +8,9 @@ import os
 from pyvis.network import Network
 import networkx as nx
 import math
+import matplotlib
+import matplotlib.pyplot as plt
+matplotlib.use('agg')
 
 # port = process.env.PORT | 5000
 
@@ -138,7 +141,7 @@ def index():
     bus = []
     completed_trips = []
 
-    times_to_simulate = 1  # allow user to control
+    times_to_simulate = 100  # allow user to control
     trip_summaries = {}
 
     for x in range(times_to_simulate):
@@ -149,7 +152,7 @@ def index():
             j = 0
             while j < offs[i]:
                 if len(bus) > 0:
-                    random_index = random.randint(0, len(bus) --- 1)
+                    random_index = random.randint(0, len(bus) - 1)
                     exited_passenger: Passenger = bus.pop(random_index)
                     exited_passenger.set_off_stop(stops[i])
                     completed_trips.append(exited_passenger)
@@ -177,16 +180,20 @@ def index():
 
     # show sankey
     max_value = max(trip_summaries.values())
-    keys_with_highest_value = [key for key, value in trip_summaries.items() if value == max_value]
-    random_key = random.choice(keys_with_highest_value)
-    pairs = random_key.split(", ")
-    # print(pairs)
-    origin_dest = [pair.split(": ")[0] for pair in pairs]
-    origin = [origin_dest_pair.split(" --- ")[0] for origin_dest_pair in origin_dest]
-    dest = [origin_dest_pair.split(" --- ")[1] for origin_dest_pair in origin_dest]
-    origin_index = [stops.index(curr_origin) + 1 for curr_origin in origin]
-    dest_index = [stops.index(curr_dest) + 1 for curr_dest in dest]
-    values = [int(pair.split(": ")[1]) for pair in pairs]
+    if '' not in trip_summaries:
+        keys_with_highest_value = [key for key, value in trip_summaries.items() if value == max_value]
+        random_key = random.choice(keys_with_highest_value)
+        pairs = random_key.split(", ")
+        origin_dest = [pair.split(": ")[0] for pair in pairs]
+        origin = [origin_dest_pair.split(" --- ")[0] for origin_dest_pair in origin_dest]
+        dest = [origin_dest_pair.split(" --- ")[1] for origin_dest_pair in origin_dest]
+        origin_index = [stops.index(curr_origin) + 1 for curr_origin in origin]
+        dest_index = [stops.index(curr_dest) + 1 for curr_dest in dest]
+        values = [int(pair.split(": ")[1]) for pair in pairs]
+    else:
+        origin_index = []
+        dest_index = []
+        values = []
 
     fig = go.Figure(data=[go.Sankey(
         node = dict(
@@ -202,10 +209,17 @@ def index():
         value = values
     ))])
 
-    fig.update_layout(title_text="Passenger Flow Between Stops", font_size=10)
+    # fig.update_layout(title_text="Passenger Flow Between Stops", font_size=10)
+    # only show the shape
+    fig.update_layout(
+        font_size=1,  # Set font size to a very small value
+        paper_bgcolor='rgba(0,0,0,0)', # Transparent background
+        plot_bgcolor='rgba(0,0,0,0)'  # Transparent background
+    )
+    pio.write_image(fig, f'./images/sankey/{ route_name }_{ direction }_{ date }_{ service_day }.png')
+
     graph_json = pio.to_json(fig, pretty=True)
     json_data = json.loads(graph_json)
-
     with open('data.json', 'w', encoding='utf-8') as f:
         json.dump(json_data, f)
     
@@ -226,14 +240,21 @@ def index():
                 capacity = edges["value"][i],
                 weight=edges["value"][i])
         i += 1
+    nx.draw(G, with_labels=False, node_color='yellow')
+    plt.savefig(f'./images/networkx/{ route_name }_{ direction }_{ date }_{ service_day }.png', format="PNG")
+    plt.clf()
     nt = Network('750px', '80%', cdn_resources='remote')
     nt.from_nx(G)
     nt.show_buttons()
     nt.show('nx.html', notebook=False)
 
-    cut_value, cut_edges = nx.algorithms.flow.minimum_cut(G, labels[0], labels[len(labels) - 1])
-    print("Bottleneck capacity:", cut_value)
-    print("Bottleneck edges:", cut_edges)
+    # cut_value, cut_edges = nx.algorithms.flow.minimum_cut(G, labels[0], labels[len(labels) - 1])
+    # print("Bottleneck capacity:", cut_value)
+    # print("Bottleneck edges:", cut_edges)
+
+    # node_set = nx.minimum_node_cut(G)
+    # print("hello")
+    # print(node_set)
 
     return render_template('./index.html', graphJSON=graph_json,
                            menu_route_list=menu_route_list,

@@ -1,0 +1,4 @@
+curl --header "Content-Type: application/json" \
+  --request POST \
+  --data '{"route_name":"1","service_day":"xyz","date":"","direction":""}' \
+  http://127.0.0.1:5000/
