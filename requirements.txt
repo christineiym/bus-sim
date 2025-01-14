@@ -33,7 +33,6 @@ matplotlib-inline==0.1.7
 mdurl==0.1.2
 ml_dtypes==0.5.1
 namex==0.0.8
-NetComp==0.2.3
 networkx==3.4.2
 numpy==1.26.4
 optree==0.13.1
