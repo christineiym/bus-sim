@@ -247,6 +247,7 @@ def index():
     nt.from_nx(G)
     nt.show_buttons()
     nt.show('nx.html', notebook=False)
+    nx.write_gml(G, f'./gml/{ route_name }_{ direction }_{ date }_{ service_day }.gml')
 
     # cut_value, cut_edges = nx.algorithms.flow.minimum_cut(G, labels[0], labels[len(labels) - 1])
     # print("Bottleneck capacity:", cut_value)
