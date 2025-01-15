@@ -118,6 +118,7 @@ def main():
 
     # write to file
     with open('sankey_clusters.csv', 'w') as csvfile: 
+        print("hello")
         writer = csv.DictWriter(csvfile, fieldnames = ["cluster", "file"]) 
         writer.writeheader() 
         writer.writerows(file_groups)
@@ -133,7 +134,8 @@ def main():
             files = files[:29]
         # plot each image in the cluster
         for index, file in enumerate(files):
-            plt.subplot(10,10,index+1)
+            current_fig = plt.subplot(10,10,index+1)
+            current_fig.title.set_text(str(file).replace("_Inbound_202001_Weekday.png", ""))
             img = load_img(file)
             img = np.array(img)
             plt.imshow(img)
