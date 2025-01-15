@@ -127,7 +127,8 @@ def main():
     def view_cluster(cluster):
         plt.figure(figsize = (11,11))
         # gets the list of filenames for a cluster
-        files = groups[cluster]
+        files = list(groups[cluster])
+        files.sort()
         # only allow up to 30 images to be shown at a time
         if len(files) > 30:
             print(f"Clipping cluster size from {len(files)} to 30")

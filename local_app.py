@@ -209,7 +209,7 @@ def index():
         value = values
     ))])
 
-    # fig.update_layout(title_text="Passenger Flow Between Stops", font_size=10)
+    fig.update_layout(title_text="Passenger Flow Between Stops", font_size=10)
     # only show the shape
     fig.update_layout(
         font_size=1,  # Set font size to a very small value
@@ -249,9 +249,13 @@ def index():
     nt.show('nx.html', notebook=False)
     nx.write_gml(G, f'./gml/{ route_name }_{ direction }_{ date }_{ service_day }.gml')
 
-    # cut_value, cut_edges = nx.algorithms.flow.minimum_cut(G, labels[0], labels[len(labels) - 1])
-    # print("Bottleneck capacity:", cut_value)
-    # print("Bottleneck edges:", cut_edges)
+    cut_value, node_partition = nx.algorithms.flow.minimum_cut(G, labels[0], labels[len(labels) - 1])
+    with open("partitions.txt", "a") as file:
+        file.write(f'{ route_name }_{ direction }_{ date }_{ service_day };')
+        file.write(str(cut_value))
+        file.write(";")
+        file.write(str(node_partition))
+        file.write("\n")
 
     # node_set = nx.minimum_node_cut(G)
     # print("hello")
